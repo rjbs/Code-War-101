@@ -11,6 +11,7 @@ list](http://www.listbox.com/member/archive/227045/2013/07/entry/8:9/20130702114
 # Core Wars
 
 * [The Beginner's Guide to Redcode](http://vyznev.net/corewar/guide.html)
+* [The (*A*?) Core Wars Home Page](http://www.corewars.org/)
 * [The pMARS Home Page](http://corewar.co.uk/pmars/)
 * [The `pmars(6)` man page](http://beej.us/pizza/koth/pmars.txt)
 * [Core Wars on Wikipedia](http://en.wikipedia.org/wiki/Core_War)
