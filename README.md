@@ -28,6 +28,8 @@ list](http://www.listbox.com/member/archive/227045/2013/07/entry/8:9/20130702114
   it will work on Linux or OS X?
 * [RobotWar](http://en.wikipedia.org/wiki/RobotWar) sounds fun except for the
   "BASIC-like language" part.
+* [Real Time Battle](http://realtimebattle.sourceforge.net/) lets you write
+  your robots in any language that can communicate via pipes
 * [Perlwar](https://metacpan.org/module/YANICK/Games-Perlwar-0.03/lib/Games/Perlwar/Rules.pod)
 * [Mouse Run](http://mouse-run.appspot.com/)
 * [Carnage Heart](http://en.wikipedia.org/wiki/Carnage_Heart) looks hard to
