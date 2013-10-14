@@ -14,7 +14,7 @@ class Bot
 
   def calculate_move
     if @history.count < 5
-      %w{ rock paper scissors }.sample
+      %w{ rock paper scissors }.shuffle.first
     else
       defeat most_frequent_enemy_play
     end
