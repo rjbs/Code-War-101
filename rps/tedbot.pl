@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+$|++;
 
 my $init;
 my $lastmove;
