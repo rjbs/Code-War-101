@@ -25,7 +25,7 @@ class Bot
   end
 
   def send_move
-    p "#{calculate_move}\n"
+    puts calculate_move
     collect_response
   end
 
