@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+STDOUT.sync = true
 
 class Bot
 
