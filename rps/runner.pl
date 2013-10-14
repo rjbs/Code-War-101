@@ -40,7 +40,7 @@ for (1 .. $times) {
   my @result = result($play1, $play2);
   $SIG{PIPE} = 'IGNORE'; # <-- lame
   s/ /-/g for $play1, $play2;
-  print { $w1 } "$play1 $play2 $result[0]\n";
+  print { $w1 } "$play1 $play2 $result[0]\n"; # you them result
   print { $w2 } "$play2 $play1 $result[1]\n";
 
   $score{0}++ if $result[0] eq 'tie';
