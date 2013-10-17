@@ -24,6 +24,7 @@ my $cmd1  = $ARGV[0] // die "not enough args";
 my $cmd2  = $ARGV[1] // die "not enough args";
 
 my ($r1, $w1, $r2, $w2);
+$ENV{PATH} = "$ENV{CWD}:$ENV{PATH}"; # <-- ridiculous
 my $pid1 = open2 $r1, $w1, $cmd1;
 my $pid2 = open2 $r2, $w2, $cmd2;
 
