@@ -2,7 +2,13 @@
 use 5.12.0;
 use warnings;
 
+use Getopt::Long::Descriptive;
 use IPC::Open2 qw(open2);
+
+my ($opt, $desc) = describe_options(
+  "%c %o <program> ...",
+  [ "rounds|r=i", "rounds to run each pairing", { default => 10 } ],
+);
 
 my %valid  = map {; $_ => 1 } qw(rock paper scissors);
 my %winner = (
@@ -16,7 +22,6 @@ my %winner = (
 
 my $cmd1  = $ARGV[0] // die "not enough args";
 my $cmd2  = $ARGV[1] // die "not enough args";
-my $times = $ARGV[2] // die "not enough args";
 
 my ($r1, $w1, $r2, $w2);
 my $pid1 = open2 $r1, $w1, $cmd1;
@@ -31,7 +36,7 @@ my %score = (
   2 => 0,
 );
 
-for (1 .. $times) {
+for (1 .. $opt->rounds) {
   my $play1 = <$r1>;
   my $play2 = <$r2>;
 
