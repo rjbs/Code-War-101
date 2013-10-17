@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-use 5.18.1;
+use 5.12.0;
 use warnings;
 
 use IPC::Open2 qw(open2);
