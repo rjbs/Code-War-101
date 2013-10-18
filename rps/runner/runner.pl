@@ -2,6 +2,7 @@
 use 5.12.0;
 use warnings;
 
+use Cwd 'getcwd';
 use Getopt::Long::Descriptive;
 use IPC::Open2 qw(open2);
 
@@ -20,45 +21,66 @@ my %winner = (
   scissorsrock  => 2,
 );
 
-my $cmd1  = $ARGV[0] // die "not enough args";
-my $cmd2  = $ARGV[1] // die "not enough args";
+die "not enough args" unless @ARGV > 1;
 
-my ($r1, $w1, $r2, $w2);
-$ENV{PATH} = "$ENV{CWD}:$ENV{PATH}"; # <-- ridiculous
-my $pid1 = open2 $r1, $w1, $cmd1;
-my $pid2 = open2 $r2, $w2, $cmd2;
-
-print {$w1} "init\n";
-print {$w2} "init\n";
-
-my %score = (
-  0 => 0,
-  1 => 0,
-  2 => 0,
-);
-
-for (1 .. $opt->rounds) {
-  my $play1 = <$r1>;
-  my $play2 = <$r2>;
-
-  chomp($play1, $play2);
-
-  my @result = result($play1, $play2);
-  $SIG{PIPE} = 'IGNORE'; # <-- lame
-  s/ /-/g for $play1, $play2;
-  print { $w1 } "$play1 $play2 $result[0]\n"; # you them result
-  print { $w2 } "$play2 $play1 $result[1]\n";
-
-  $score{0}++ if $result[0] eq 'tie';
-  $score{1}++ if $result[0] eq 'win';
-  $score{2}++ if $result[1] eq 'win';
-
-  say "Player 1: $score{1}";
-  say "Player 2: $score{2}";
-  say "Ties    : $score{0}";
+my %final_wins;
+my @bots = @ARGV;
+for my $i (0 .. $#bots) {
+  for my $j (grep {; $_ != $i } (0 .. $#bots)) {
+    my ($w1, $w2) = run_one_pair($i, $j);
+    $final_wins{ $i } += $w1;
+    $final_wins{ $j } += $w2;
+  }
 }
 
-close $_ for ($r1, $w1, $r2, $w2);
+for (sort { $final_wins{$b} <=> $final_wins{$a} } 0 .. $#bots) {
+  printf "%2u. %20s: %6s\n", $_, $bots[$_], $final_wins{ $_ };
+}
+
+sub run_one_pair {
+  my ($i, $j) = @_;
+  my $cmd1 = $bots[$i];
+  my $cmd2 = $bots[$j];
+
+  my ($r1, $w1, $r2, $w2);
+  local $ENV{PATH} = getcwd . ":$ENV{PATH}"; # <-- ridiculous
+  my $pid1 = open2 $r1, $w1, $cmd1;
+  my $pid2 = open2 $r2, $w2, $cmd2;
+
+  print {$w1} "init\n";
+  print {$w2} "init\n";
+
+  my %score = (
+    0 => 0,
+    1 => 0,
+    2 => 0,
+  );
+
+  for (1 .. $opt->rounds) {
+    my $play1 = <$r1>;
+    my $play2 = <$r2>;
+
+    chomp($play1, $play2);
+
+    my @result = result($play1, $play2);
+    $SIG{PIPE} = 'IGNORE'; # <-- lame
+    s/ /-/g for $play1, $play2;
+    print { $w1 } "$play1 $play2 $result[0]\n"; # you them result
+    print { $w2 } "$play2 $play1 $result[1]\n";
+
+    $score{0}++ if $result[0] eq 'tie';
+    $score{1}++ if $result[0] eq 'win';
+    $score{2}++ if $result[1] eq 'win';
+
+    say "Player 1: $score{1}";
+    say "Player 2: $score{2}";
+    say "Ties    : $score{0}";
+  }
+
+  close $_ for ($r1, $w1, $r2, $w2);
+
+  return @score{ 1, 2 };
+}
 
 sub result {
   my ($p1, $p2) = @_;
