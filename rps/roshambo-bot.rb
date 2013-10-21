@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 STDOUT.sync = true
 
+Signal.trap("PIPE", "EXIT")
+
 class Bot
 
   def initialize
