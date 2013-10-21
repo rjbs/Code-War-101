@@ -85,8 +85,8 @@ sub run_one_pair {
 
     $score{ $result[0] }++;
 
-    say "Player 1: $score{1}";
-    say "Player 2: $score{2}";
+    printf "%-16s: $score{1}\n", $bots[$i];
+    printf "%-16s: $score{2}\n", $bots[$j];
     say "Ties    : $score{tie}";
     say "DDQ     : $score{ddq}";
   }
