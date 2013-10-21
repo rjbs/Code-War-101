@@ -24,12 +24,26 @@ my %winner = (
 die "not enough args" unless @ARGV > 1;
 
 my %final_wins;
+my %pairing;
 my @bots = @ARGV;
 for my $i (0 .. $#bots) {
   for my $j (grep {; $_ != $i } (0 .. $#bots)) {
-    my ($w1, $w2) = run_one_pair($i, $j);
-    $final_wins{ $i } += $w1;
-    $final_wins{ $j } += $w2;
+    my $score = run_one_pair($i, $j);
+    my ($w1, $w2) =
+    $final_wins{ $i } += $score->{1};
+    $final_wins{ $j } += $score->{2};
+    $pairing{$i}{$j} = $score;
+  }
+}
+
+printf " %16s  |  %16s  | %6s | %6s | %6s | %6s\n",
+  'Player 1', 'Player 2', qw(win lose tie ddq);
+print  "-" x 75, "\n";
+for my $i (sort { $a <=> $b } keys %pairing) {
+  for my $j (sort { $a <=> $b } keys %{ $pairing{$i} }) {
+    my $score = $pairing{$i}{$j};
+    printf "(%16s) v (%16s) : %6d - %6d - %6d - %6d\n",
+      $bots[$i], $bots[$j], @$score{qw(1 2 tie ddq)};
   }
 }
 
@@ -51,9 +65,10 @@ sub run_one_pair {
   print {$w2} "init\n";
 
   my %score = (
-    0 => 0,
-    1 => 0,
-    2 => 0,
+    ddq => 0,
+    tie => 0,
+    1   => 0,
+    2   => 0,
   );
 
   for (1 .. $opt->rounds) {
@@ -65,34 +80,33 @@ sub run_one_pair {
     my @result = result($play1, $play2);
     $SIG{PIPE} = 'IGNORE'; # <-- lame
     s/ /-/g for $play1, $play2;
-    print { $w1 } "$play1 $play2 $result[0]\n"; # you them result
-    print { $w2 } "$play2 $play1 $result[1]\n";
+    print { $w1 } "$play1 $play2 $result[1]\n"; # you them result
+    print { $w2 } "$play2 $play1 $result[2]\n";
 
-    $score{0}++ if $result[0] eq 'tie';
-    $score{1}++ if $result[0] eq 'win';
-    $score{2}++ if $result[1] eq 'win';
+    $score{ $result[0] }++;
 
     say "Player 1: $score{1}";
     say "Player 2: $score{2}";
-    say "Ties    : $score{0}";
+    say "Ties    : $score{tie}";
+    say "DDQ     : $score{ddq}";
   }
 
   close $_ for ($r1, $w1, $r2, $w2);
 
-  return @score{ 1, 2 };
+  return \%score;
 }
 
 sub result {
   my ($p1, $p2) = @_;
   warn "<$p1> <$p2>\n";
-  return qw(dq   dq)   if !$valid{$p1} && !$valid{$p2};
-  return qw(dq   win)  if !$valid{$p1};
-  return qw(win  dq)   if !$valid{$p2};
-  return qw(tie  tie)  if $p1 eq $p2;
+  return qw(ddq dq   dq)   if !$valid{$p1} && !$valid{$p2};
+  return qw(2   dq   win)  if !$valid{$p1};
+  return qw(1   win  dq)   if !$valid{$p2};
+  return qw(tie tie  tie)  if $p1 eq $p2;
 
   my $winner = $winner{"$p1$p2"};
-  return qw(win  lose) if $winner == 1;
-  return qw(lose win)  if $winner == 2;
+  return qw(1   win  lose) if $winner == 1;
+  return qw(2   lose win)  if $winner == 2;
 
   die "something very strange has happened: <<$p1> <$p2>>";
 }
