@@ -72,8 +72,8 @@ sub run_one_pair {
   );
 
   for (1 .. $opt->rounds) {
-    my $play1 = <$r1>;
-    my $play2 = <$r2>;
+    my $play1 = eof $r1 ? 'DEAD' : <$r1>;
+    my $play2 = eof $r2 ? 'DEAD' : <$r2>;
 
     chomp($play1, $play2);
 
