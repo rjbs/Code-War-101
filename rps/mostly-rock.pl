@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-use 5.18.0;
+use 5.10.1;
 $|++;
 
 my @options = qw(rock rock rock rock rock
