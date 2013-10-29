@@ -9,6 +9,7 @@ use IPC::Open2 qw(open2);
 my ($opt, $desc) = describe_options(
   "%c %o <program> ...",
   [ "rounds|r=i", "rounds to run each pairing", { default => 10 } ],
+  [ "focus",      "focus on results with first bot"               ],
 );
 
 my %valid  = map {; $_ => 1 } qw(rock paper scissors);
@@ -27,7 +28,12 @@ my %final_wins;
 my %pairing;
 my @bots = @ARGV;
 for my $i (0 .. $#bots) {
-  for my $j (grep {; $_ != $i } (0 .. $#bots)) {
+  my @opponents = $opt->focus
+                ? $i == 0 ? (1 .. $#bots)
+                          : 0
+                : grep {; $_ != $i } (0 .. $#bots);
+
+  for my $j (@opponents) {
     my $score = run_one_pair($i, $j);
     my ($w1, $w2) =
     $final_wins{ $i } += $score->{1};
