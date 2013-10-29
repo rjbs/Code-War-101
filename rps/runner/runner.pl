@@ -79,7 +79,8 @@ sub run_one_pair {
 
     my @result = result($play1, $play2);
     $SIG{PIPE} = 'IGNORE'; # <-- lame
-    s/ /-/g for $play1, $play2;
+    s/[^a-z0-9]/-/ig for $play1, $play2;
+    length $_ or $_ = '-' for $play1, $play2;
     print { $w1 } "$play1 $play2 $result[1]\n"; # you them result
     print { $w2 } "$play2 $play1 $result[2]\n";
 
