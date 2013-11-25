@@ -27,13 +27,9 @@ die "not enough args" unless @ARGV > 1;
 my %final_wins;
 my %pairing;
 my @bots = @ARGV;
-for my $i (0 .. $#bots) {
-  my @opponents = $opt->focus
-                ? $i == 0 ? (1 .. $#bots)
-                          : 0
-                : grep {; $_ != $i } (0 .. $#bots);
 
-  for my $j (@opponents) {
+for my $i ($opt->focus ? 0 : (0 .. $#bots)) {
+  for my $j (0 .. $#bots) {
     my $score = run_one_pair($i, $j);
     my ($w1, $w2) =
     $final_wins{ $i } += $score->{1};
