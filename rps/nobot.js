@@ -5,6 +5,7 @@ var readline = require('readline');
 var inited = false;
 var plays = new Object();
 var counters = { 'rock':'paper', 'paper':'scissors', 'scissors':'rock' };
+var lastplay = -1;
 
 var rl = readline.createInterface({
   input: process.stdin,
@@ -29,9 +30,20 @@ rl.on('line', function (cmd) {
 });
 
 var move = function(played) {
-  if(!inited) {
-    return 'scissors';
+  var available_plays = ['rock','paper','scissors'];
+
+  lastplay = lastplay + 1;
+  if(lastplay >= 3) {
+    lastplay = 0;
+  }
+
+  if(!inited || (!counters[played])) {
+    return counters[available_plays[lastplay]];
   }
   var mostPlayed = Object.keys(plays).sort(function(a, b) { return (plays[b] - plays[a])});
-  return counters[mostPlayed[0]];
+  if(mostPlayed[0] - mostPlayed[1] > 5) {
+    return counters[mostPlayed[0]];
+  }
+
+  return counters[available_plays[lastplay]];
 };
