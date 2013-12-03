@@ -88,10 +88,10 @@ sub run_one_pair {
 
     $score{ $result[0] }++;
 
-    printf "%-16s: $score{1}\n", $bots[$i];
-    printf "%-16s: $score{2}\n", $bots[$j];
-    say "Ties    : $score{tie}";
-    say "DDQ     : $score{ddq}";
+    warn sprintf "%-16s: $score{1}\n", $bots[$i];
+    warn sprintf "%-16s: $score{2}\n", $bots[$j];
+    warn sprintf "Ties    : $score{tie}\n";
+    warn sprintf "DDQ     : $score{ddq}\n";
   }
 
   close $_ for ($r1, $w1, $r2, $w2);
