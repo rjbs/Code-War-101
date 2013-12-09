@@ -21,7 +21,7 @@ while (my $input = <STDIN>) {
 
     my $move = ( $them eq "rock" ) ? "paper" :
                ( $them eq "paper" ) ? "scissors" :
-               ( $them eq "scissors" ) ? "rock" : undef;
+               ( $them eq "scissors" ) ? "rock" : firstmove();
 
     last $init unless ( $move );
 
@@ -32,6 +32,6 @@ while (my $input = <STDIN>) {
 
 sub firstmove {
     my @range=(0 .. 2);
-    my %play = ( 0 => 'rock', 1 => 'paper', 2 => 'scsissors' );
+    my %play = ( 0 => 'rock', 1 => 'paper', 2 => 'scissors' );
     return $play{$range[rand(@range)]};
 }
