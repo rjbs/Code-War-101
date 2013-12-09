@@ -24,7 +24,9 @@ class Bot
   end
 
   def start_play_loop
-    send_move
+    while true
+      send_move
+    end
   end
 
   def send_move
@@ -36,7 +38,6 @@ class Bot
     @input = gets
     exit 0 if @input.nil?
     @history << @input.chomp.split(' ')
-    send_move
   end
 
   private
