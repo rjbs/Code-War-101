@@ -7,6 +7,7 @@ class Bot
 
   def initialize
     @history = []
+    @uniq_play_counts = Hash.new(0)
   end
 
   def received_init?
@@ -54,12 +55,9 @@ class Bot
   end
 
   def most_frequent_enemy_play
-    enemy_plays = []
-    @history.each do |p| enemy_plays << p[1] end
-    uniq_play_counts = Hash.new(0)
-    enemy_plays.each do |i| uniq_play_counts[i] += 1 end
-    uniq_play_counts = uniq_play_counts.sort_by {|k,v| v}.reverse
-    most_freq_enemy_play = uniq_play_counts.first.first
+    @uniq_play_counts[ @history[-1][1] ] += 1
+    sorted_counts = @uniq_play_counts.sort_by {|k,v| v}.reverse
+    most_freq_enemy_play = sorted_counts.first.first
   end
 
 end
