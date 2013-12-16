@@ -22,7 +22,7 @@ my %winner = (
   scissorsrock  => 2,
 );
 
-die "not enough args" unless @ARGV > 1;
+die "not enough args" unless @ARGV;
 
 my %final_wins;
 my %pairing;
